@@ -323,7 +323,7 @@ iD.Connection = function() {
             });
 
         function bboxUrl(tile) {
-            return '/bin/bohol_fmr.xml';
+            return 'bin/bohol_fmr.xml';
             //return 'http://localhost:1337/map?bbox=' + tile.extent.toParam();
             //return url + '/api/0.6/map?bbox=' + tile.extent.toParam();
         }
