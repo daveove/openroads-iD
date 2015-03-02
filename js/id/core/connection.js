@@ -139,6 +139,7 @@ iD.Connection = function() {
     function parse(dom) {
         if (!dom || !dom.childNodes) return new Error('Bad request');
 
+        console.log(dom);
         var root = dom.childNodes[0],
             children = root.childNodes,
             entities = [];
@@ -151,6 +152,7 @@ iD.Connection = function() {
             }
         }
 
+        console.log(entities);
         return entities;
     }
 
@@ -321,7 +323,9 @@ iD.Connection = function() {
             });
 
         function bboxUrl(tile) {
-            return url + '/api/0.6/map?bbox=' + tile.extent.toParam();
+            return '/bin/bohol_fmr.xml';
+            //return 'http://localhost:1337/map?bbox=' + tile.extent.toParam();
+            //return url + '/api/0.6/map?bbox=' + tile.extent.toParam();
         }
 
         _.filter(inflight, function(v, i) {
