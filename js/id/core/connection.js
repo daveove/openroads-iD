@@ -221,6 +221,20 @@ iD.Connection = function() {
     };
 
     connection.putChangeset = function(changes, comment, imageryUsed, callback) {
+        var create =  JXON.stringify(connection.changesetJXON(connection.changesetTags(comment, imageryUsed)));
+        var upload = JXON.stringify(connection.osmChangeJXON('123', changes))
+
+        $$.ajax({
+          url: 'http://localhost:1337/changeset/create',
+          data: { xmlString: create },
+          method: 'PUT',
+          dataType: 'json',
+          success: function() {
+            callback(null, '123');
+          }
+        });
+
+        /*
         oauth.xhr({
                 method: 'PUT',
                 path: '/api/0.6/changeset/create',
@@ -243,6 +257,7 @@ iD.Connection = function() {
                     });
                 });
             });
+            */
     };
 
     var userDetails;
@@ -323,9 +338,9 @@ iD.Connection = function() {
             });
 
         function bboxUrl(tile) {
-            return 'bin/bohol_fmr.xml';
-            //return 'http://localhost:1337/map?bbox=' + tile.extent.toParam();
-            //return url + '/api/0.6/map?bbox=' + tile.extent.toParam();
+            var url = 'http://localhost:1337/map?bbox=';
+            return url + tile.extent.toParam();
+            // return url + '/api/0.6/map?bbox=' + tile.extent.toParam();
         }
 
         _.filter(inflight, function(v, i) {
