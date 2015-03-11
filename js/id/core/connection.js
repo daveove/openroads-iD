@@ -221,43 +221,39 @@ iD.Connection = function() {
     };
 
     connection.putChangeset = function(changes, comment, imageryUsed, callback) {
-        var create =  JXON.stringify(connection.changesetJXON(connection.changesetTags(comment, imageryUsed)));
-        var upload = JXON.stringify(connection.osmChangeJXON('123', changes))
-
+        // TODO jquery sucks. find a better xhr lib.
         $$.ajax({
-          url: 'http://localhost:1337/changeset/create',
-          data: { xmlString: create },
-          method: 'PUT',
-          dataType: 'json',
-          success: function() {
-            callback(null, '123');
-          }
-        });
+            url: 'http://localhost:1337/changeset/create',
+            data: {
+                user: userDetails.display_name,
+                uid: userDetails.id,
+                comment: comment
+            },
+            method: 'PUT',
+            dataType: 'json',
+            success: function(changeset, status, xhr) {
 
-        /*
-        oauth.xhr({
-                method: 'PUT',
-                path: '/api/0.6/changeset/create',
-                options: { header: { 'Content-Type': 'text/xml' } },
-                content: JXON.stringify(connection.changesetJXON(connection.changesetTags(comment, imageryUsed)))
-            }, function(err, changeset_id) {
-                if (err) return callback(err);
-                oauth.xhr({
+                console.log(JXON.stringify(connection.osmChangeJXON(changeset.id, changes)));
+                $$.ajax({
+                    url: 'http://localhost:1337/changeset/' + changeset.id + '/upload',
+                    data: {
+                        xmlString: JXON.stringify(connection.osmChangeJXON(changeset.id, changes))
+                    },
                     method: 'POST',
-                    path: '/api/0.6/changeset/' + changeset_id + '/upload',
-                    options: { header: { 'Content-Type': 'text/xml' } },
-                    content: JXON.stringify(connection.osmChangeJXON(changeset_id, changes))
-                }, function(err) {
-                    if (err) return callback(err);
-                    oauth.xhr({
-                        method: 'PUT',
-                        path: '/api/0.6/changeset/' + changeset_id + '/close'
-                    }, function(err) {
-                        callback(err, changeset_id);
-                    });
+                    dataType: 'xml',
+                    success: function(changeset, status, xhr) {
+                        callback(null, changeset.id);
+                    },
+                    error: function(xhr, status, error) {
+                        callback(xhr);
+                    }
                 });
-            });
-            */
+            },
+            error: function(xhr, status, error) {
+              console.log(error);
+              callback(123);
+            }
+        });
     };
 
     var userDetails;
