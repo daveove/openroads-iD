@@ -53,7 +53,8 @@ iD.Connection = function() {
             osmID = iD.Entity.id.toOSM(id);
 
         connection.loadFromURL(
-            url + '/api/0.6/' + type + '/' + osmID + (type !== 'node' ? '/full' : ''),
+            //url + '/api/0.6/' + type + '/' + osmID + (type !== 'node' ? '/full' : ''),
+            'http://localhost:1337/xml/' + type + '/' + osmID + (type !== 'node' ? '/full' : ''),
             function(err, entities) {
                 event.load(err, {data: entities});
                 if (callback) callback(err, entities && _.find(entities, function(e) { return e.id === id; }));
@@ -334,7 +335,7 @@ iD.Connection = function() {
             });
 
         function bboxUrl(tile) {
-            var url = 'http://localhost:1337/map?bbox=';
+            var url = 'http://localhost:1337/xml/map?bbox=';
             return url + tile.extent.toParam();
             // return url + '/api/0.6/map?bbox=' + tile.extent.toParam();
         }
